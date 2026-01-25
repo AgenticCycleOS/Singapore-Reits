@@ -9,6 +9,12 @@
         .bullish { color: #10B981; }
         .bearish { color: #EF4444; }
         .neutral { color: #6B7280; }
+        .yield-high { background-color: #D1FAE5; }
+        .yield-low { background-color: #FEE2E2; }
+        .nav-discount { background-color: #DBEAFE; }
+        .nav-premium { background-color: #FEF3C7; }
+        .gearing-high { background-color: #FEE2E2; }
+        .gearing-low { background-color: #D1FAE5; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen font-sans">
@@ -16,33 +22,82 @@
     <!-- Header -->
     <header class="bg-blue-900 text-white shadow-lg">
         <div class="container mx-auto px-4 py-6">
-            <h1 class="text-3xl font-bold">ðŸ‡¸ðŸ‡¬ Singapore REITs Tracker</h1>
-            <p class="text-blue-200 mt-2">Weekly Performance & Technical Analysis</p>
-            <p class="text-sm text-blue-300 mt-1">Last Updated: {{ last_updated }}</p>
+            <h1 class="text-3xl font-bold">🇸🇬 Singapore REITs Tracker</h1>
+            <p class="text-blue-200 mt-2">Weekly Performance, Fundamentals & Technical Analysis</p>
+            <p class="text-sm text-blue-300 mt-1">Last Updated: {{ last_updated }} | Tracking {{ total_reits }} REITs</p>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
-        
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
+    
+        <!-- Summary Cards - Row 1: Performance -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-green-500">
                 <h3 class="text-gray-500 uppercase text-xs font-bold">Top Performer</h3>
-                <p class="text-2xl font-bold mt-2">{{ top_gainer.name }}</p>
-                <p class="text-green-600 font-bold">+{{ top_gainer.change_pct }}%</p>
+                <p class="text-xl font-bold mt-1">{{ top_gainer.name[:25] }}{% if top_gainer.name|length > 25 %}...{% endif %}</p>
+                <p class="text-green-600 font-bold text-lg">+{{ top_gainer.change_pct }}%</p>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow border-l-4 border-red-500">
-                <h3 class="text-gray-500 uppercase text-xs font-bold">Top Decliners</h3>
-                <p class="text-2xl font-bold mt-2">{{ top_loser.name }}</p>
-                <p class="text-red-600 font-bold">{{ top_loser.change_pct }}%</p>
+            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                <h3 class="text-gray-500 uppercase text-xs font-bold">Top Decliner</h3>
+                <p class="text-xl font-bold mt-1">{{ top_loser.name[:25] }}{% if top_loser.name|length > 25 %}...{% endif %}</p>
+                <p class="text-red-600 font-bold text-lg">{{ top_loser.change_pct }}%</p>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
-                <h3 class="text-gray-500 uppercase text-xs font-bold">Avg Sector Yield</h3>
-                <p class="text-2xl font-bold mt-2 text-blue-600">~6.2%</p>
-                <p class="text-gray-400 text-sm">Estimated Forward Yield</p>
+            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-purple-500">
+                <h3 class="text-gray-500 uppercase text-xs font-bold">Highest Yield</h3>
+                {% if highest_yield %}
+                <p class="text-xl font-bold mt-1">{{ highest_yield.name[:25] }}{% if highest_yield.name|length > 25 %}...{% endif %}</p>
+                <p class="text-purple-600 font-bold text-lg">{{ highest_yield.dividend_yield }}%</p>
+                {% else %}
+                <p class="text-gray-400 mt-1">N/A</p>
+                {% endif %}
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-indigo-500">
+                <h3 class="text-gray-500 uppercase text-xs font-bold">Deepest NAV Discount</h3>
+                {% if deepest_discount %}
+                <p class="text-xl font-bold mt-1">{{ deepest_discount.name[:25] }}{% if deepest_discount.name|length > 25 %}...{% endif %}</p>
+                <p class="text-indigo-600 font-bold text-lg">{{ deepest_discount.price_to_nav }}x P/NAV</p>
+                {% else %}
+                <p class="text-gray-400 mt-1">N/A</p>
+                {% endif %}
             </div>
         </div>
+        
+        <!-- Summary Cards - Row 2: Portfolio Averages -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-5 rounded-lg shadow">
+                <h3 class="text-blue-800 uppercase text-xs font-bold">Avg Portfolio Yield</h3>
+                <p class="text-3xl font-bold mt-2 text-blue-700">{{ portfolio_metrics.avg_yield }}%</p>
+                <p class="text-blue-500 text-sm">Distribution Yield (TTM)</p>
+            </div>
+            <div class="bg-gradient-to-r from-green-50 to-green-100 p-5 rounded-lg shadow">
+                <h3 class="text-green-800 uppercase text-xs font-bold">Avg Price/NAV</h3>
+                <p class="text-3xl font-bold mt-2 text-green-700">{{ portfolio_metrics.avg_pnav }}x</p>
+                <p class="text-green-500 text-sm">{% if portfolio_metrics.avg_pnav < 1 %}Trading at Discount{% else %}Trading at Premium{% endif %}</p>
+            </div>
+            <div class="bg-gradient-to-r from-amber-50 to-amber-100 p-5 rounded-lg shadow">
+                <h3 class="text-amber-800 uppercase text-xs font-bold">Avg Gearing Ratio</h3>
+                <p class="text-3xl font-bold mt-2 text-amber-700">{{ portfolio_metrics.avg_gearing }}%</p>
+                <p class="text-amber-500 text-sm">MAS Limit: 50%</p>
+            </div>
+        </div>
+
+        <!-- Sector Summary -->
+        {% if sector_summary %}
+        <div class="bg-white rounded-lg shadow mb-8 p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Sector Overview</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {% for sector, data in sector_summary.items() %}
+                <div class="bg-gray-50 p-4 rounded-lg text-center">
+                    <p class="text-xs text-gray-500 uppercase font-bold">{{ sector }}</p>
+                    <p class="text-sm text-gray-700 mt-1">{{ data.count }} REITs</p>
+                    <p class="text-lg font-bold text-blue-600">{{ data.avg_yield }}%</p>
+                    <p class="text-xs text-gray-400">Avg Yield</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Detailed Table -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -53,46 +108,78 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">REIT</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Segment</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price (SGD)</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Change</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">RSI</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trend</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Insights</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">REIT</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sector</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Change</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Yield</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">P/NAV</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gearing</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">RSI</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trend</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Insights</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         {% for reit in reits %}
                         <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="font-medium text-gray-900">{{ reit.name }}</div>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div class="font-medium text-gray-900 text-sm">{{ reit.name }}</div>
                                 <div class="text-xs text-gray-500">{{ reit.ticker }}</div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ reit.segment }}
+                            <td class="px-4 py-4 whitespace-nowrap text-xs text-gray-500">
+                                <span class="px-2 py-1 bg-gray-100 rounded">{{ reit.sector }}</span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                {{ reit.price }}
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                                ${{ reit.price }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            <td class="px-4 py-4 whitespace-nowrap text-sm">
+                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
                                     {% if reit.change_pct >= 0 %} bg-green-100 text-green-800 {% else %} bg-red-100 text-red-800 {% endif %}">
-                                    {{ reit.change_pct }}%
+                                    {% if reit.change_pct >= 0 %}+{% endif %}{{ reit.change_pct }}%
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ reit.rsi }}
+                            <td class="px-4 py-4 whitespace-nowrap text-sm">
+                                {% if reit.dividend_yield %}
+                                <span class="font-semibold {% if reit.dividend_yield >= 6 %}text-green-600{% elif reit.dividend_yield >= 5 %}text-blue-600{% else %}text-gray-600{% endif %}">
+                                    {{ reit.dividend_yield }}%
+                                </span>
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <td class="px-4 py-4 whitespace-nowrap text-sm">
+                                {% if reit.price_to_nav %}
+                                <span class="font-semibold {% if reit.price_to_nav < 0.9 %}text-blue-600{% elif reit.price_to_nav > 1.2 %}text-amber-600{% else %}text-gray-600{% endif %}">
+                                    {{ reit.price_to_nav }}x
+                                </span>
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm">
+                                {% if reit.gearing_ratio %}
+                                <span class="font-semibold {% if reit.gearing_ratio >= 45 %}text-red-600{% elif reit.gearing_ratio >= 40 %}text-amber-600{% else %}text-green-600{% endif %}">
+                                    {{ reit.gearing_ratio }}%
+                                </span>
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm">
+                                <span class="{% if reit.rsi > 70 %}text-red-600 font-bold{% elif reit.rsi < 30 %}text-green-600 font-bold{% else %}text-gray-600{% endif %}">
+                                    {{ reit.rsi }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm">
                                 <span class="
                                     {% if reit.trend == 'Bullish' %} bullish {% elif reit.trend == 'Bearish' %} bearish {% else %} neutral {% endif %} font-semibold">
                                     {{ reit.trend }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500">
-                                <ul class="list-disc pl-4 text-xs">
-                                    {% for insight in reit.insights %}
+                            <td class="px-4 py-3 text-sm text-gray-500">
+                                <ul class="list-disc pl-4 text-xs space-y-1">
+                                    {% for insight in reit.insights[:3] %}
                                     <li>{{ insight }}</li>
                                     {% endfor %}
                                 </ul>
@@ -104,8 +191,20 @@
             </div>
         </div>
         
+        <!-- Legend -->
+        <div class="mt-6 bg-white rounded-lg shadow p-4">
+            <h3 class="text-sm font-semibold text-gray-700 mb-2">Color Guide</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                <div><span class="text-green-600 font-bold">● Yield ≥6%</span> - Attractive yield</div>
+                <div><span class="text-blue-600 font-bold">● P/NAV <0.9x</span> - NAV discount</div>
+                <div><span class="text-amber-600 font-bold">● P/NAV >1.2x</span> - NAV premium</div>
+                <div><span class="text-red-600 font-bold">● Gearing ≥45%</span> - High leverage</div>
+            </div>
+        </div>
+        
         <footer class="mt-8 text-center text-gray-400 text-sm">
-            <p>Generated automatically by S-REITs Dashboard Bot. Data provided for informational purposes only.</p>
+            <p>Generated automatically by S-REITs Dashboard Bot. Fundamental data from Fifth Person.</p>
+            <p class="mt-1">Data provided for informational purposes only. Not financial advice.</p>
         </footer>
 
     </main>

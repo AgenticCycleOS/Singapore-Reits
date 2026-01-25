@@ -1,6 +1,7 @@
 import requests
 import os
 import logging
+import html
 
 logger = logging.getLogger(__name__)
 
@@ -21,30 +22,30 @@ def send_telegram_summary(reits_data):
     bottom_3 = sorted_by_change[-3:]
     
     # Construct Message
-    message = "<b>ðŸ‡¸ðŸ‡¬ Weekly S-REITs Update</b>\n\n"
+    message = "<b>🇸🇬 Weekly S-REITs Update</b>\n\n"
     
-    message += "<b>ðŸš€ Top Gainer:</b>\n"
-    message += f"{top_3[0]['name']}: {top_3[0]['change_pct']}%\n\n"
+    message += "<b>🚀 Top Gainer:</b>\n"
+    message += f"{html.escape(top_3[0]['name'])}: {top_3[0]['change_pct']}%\n\n"
     
-    message += "<b>ðŸ”¥ Key Movers:</b>\n"
+    message += "<b>🔥 Key Movers:</b>\n"
     for r in top_3:
-        message += f"âœ… {r['ticker']}: +{r['change_pct']}%\n"
+        message += f"✅ {html.escape(r['ticker'])}: +{r['change_pct']}%\n"
     message += "\n"
     for r in bottom_3:
         if r['change_pct'] < 0:
-            message += f"ðŸ”» {r['ticker']}: {r['change_pct']}%\n"
+            message += f"🔻 {html.escape(r['ticker'])}: {r['change_pct']}%\n"
             
-    message += "\n<b>ðŸš¦ Signals:</b>\n"
+    message += "\n<b>🚥 Signals:</b>\n"
     alerts = [r for r in reits_data if "Opportunity" in " ".join(r['insights']) or "Risk" in " ".join(r['insights'])]
     if alerts:
         for a in alerts[:5]: # Limit to 5 alerts
             insight = [i for i in a['insights'] if "Opportunity" in i or "Risk" in i][0]
-            icon = "ðŸŸ¢" if "Opportunity" in insight else "ðŸ”´"
-            message += f"{icon} {a['ticker']}: {insight}\n"
+            icon = "🟢" if "Opportunity" in insight else "🔴"
+            message += f"{icon} {html.escape(a['ticker'])}: {html.escape(insight)}\n"
     else:
         message += "No major technical signals this week.\n"
         
-    message += "\n<a href='https://lew-family.github.io/s-reits-dashboard/'>View Full Dashboard</a>"
+    message += "\n<a href='https://agenticcycleos.github.io/Singapore-Reits/'>View Full Dashboard</a>"
     
     # Send
     url = f"https://api.telegram.org/bot{token}/sendMessage"

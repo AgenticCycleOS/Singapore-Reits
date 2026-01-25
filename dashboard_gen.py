@@ -26,8 +26,15 @@ def generate_dashboard(reits_data, output_file="index.html"):
     # Render
     html_content = template.render(context)
     
+    # Ensure public directory exists
+    output_dir = "public"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        
+    output_path = os.path.join(output_dir, output_file)
+    
     # write to file
-    with open(output_file, "w", encoding='utf-8') as f:
+    with open(output_path, "w", encoding='utf-8') as f:
         f.write(html_content)
         
-    print(f"Dashboard generated at {output_file}")
+    print(f"Dashboard generated at {output_path}")

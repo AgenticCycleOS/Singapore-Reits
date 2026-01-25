@@ -1,5 +1,4 @@
 import json
-import json
 from data_fetcher import (
     fetch_reit_data, 
     get_current_price, 
@@ -10,6 +9,7 @@ from data_fetcher import (
 )
 from analyzer import analyze_reit
 from dashboard_gen import generate_dashboard
+from telegram_bot import send_update
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -129,6 +129,13 @@ def main():
     )
     
     logger.info("Dashboard generation complete!")
+    
+    # Send Telegram update
+    try:
+        send_update(all_reits_data, portfolio_metrics=portfolio_metrics)
+        logger.info("Telegram notification sent!")
+    except Exception as e:
+        logger.error(f"Failed to send Telegram update: {e}")
     
     return all_reits_data
 

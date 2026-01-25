@@ -1,0 +1,52 @@
+[
+    {
+        "ticker": "C38U.SI",
+        "name": "CapitaLand Integrated Commercial Trust",
+        "segment": "Commercial/Retail"
+    },
+    {
+        "ticker": "A17U.SI",
+        "name": "CapitaLand Ascendas REIT",
+        "segment": "Industrial"
+    },
+    {
+        "ticker": "M44U.SI",
+        "name": "Mapletree Logistics Trust",
+        "segment": "Logistics"
+    },
+    {
+        "ticker": "ME8U.SI",
+        "name": "Mapletree Industrial Trust",
+        "segment": "Industrial DC"
+    },
+    {
+        "ticker": "N2IU.SI",
+        "name": "Mapletree Pan Asia Commercial Trust",
+        "segment": "Commercial/Retail"
+    },
+    {
+        "ticker": "BUOU.SI",
+        "name": "Frasers Logistics & Commercial Trust",
+        "segment": "Logistics/Commercial"
+    },
+    {
+        "ticker": "J69U.SI",
+        "name": "Frasers Centrepoint Trust",
+        "segment": "Retail"
+    },
+    {
+        "ticker": "AJBU.SI",
+        "name": "Keppel DC REIT",
+        "segment": "Data Centre"
+    },
+    {
+        "ticker": "T82U.SI",
+        "name": "Suntec REIT",
+        "segment": "Commercial/Retail"
+    },
+    {
+        "ticker": "C2PU.SI",
+        "name": "Parkway Life REIT",
+        "segment": "Healthcare"
+    }
+]

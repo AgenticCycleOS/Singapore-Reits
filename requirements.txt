@@ -1,0 +1,5 @@
+yfinance
+pandas
+jinja2
+requests
+ta

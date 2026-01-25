@@ -8,7 +8,7 @@ def send_telegram_summary(reits_data):
     """
     Sends a summary of the REITs performance to Telegram.
     """
-    token = os.environ.get("TELEGRAM_TOKEN")
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
     
     if not token or not chat_id:

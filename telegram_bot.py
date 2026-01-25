@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
 
-async def send_telegram_update(reits_data, portfolio_metrics=None):
+async def send_telegram_update(reits_data, portfolio_metrics=None, ai_analysis=None):
     """
     Sends a formatted update to Telegram.
     """
@@ -29,6 +29,13 @@ async def send_telegram_update(reits_data, portfolio_metrics=None):
         # Build message
         message = "🇸🇬 *S-REITs Weekly Update*\n\n"
         
+        # AI Market Commentary (New)
+        if ai_analysis and ai_analysis.get('market_commentary'):
+            commentary = ai_analysis['market_commentary']
+            # Take only the first two sections or up to 200 chars for brevity
+            preview = commentary.split('\n\n')[0] if '\n\n' in commentary else commentary[:200]
+            message += f"🤖 *AI Insight:*\n_{preview}_\n\n"
+        
         # Portfolio summary
         if portfolio_metrics:
             message += "*Portfolio Averages:*\n"
@@ -42,40 +49,15 @@ async def send_telegram_update(reits_data, portfolio_metrics=None):
             yield_str = f" | Yield: {reit['dividend_yield']}%" if reit.get('dividend_yield') else ""
             message += f"• {reit['name'][:25]}: +{reit['change_pct']}%{yield_str}\n"
         
-        message += "\n*🔴 Decliners:*\n"
-        for reit in bottom_3:
-            yield_str = f" | Yield: {reit['dividend_yield']}%" if reit.get('dividend_yield') else ""
-            message += f"• {reit['name'][:25]}: {reit['change_pct']}%{yield_str}\n"
+        # AI Portfolio recommendation (New)
+        if ai_analysis and ai_analysis.get('portfolio_recommendation'):
+            rec = ai_analysis['portfolio_recommendation']
+            stance = "Neutral"
+            if "Overweight" in rec: stance = "🟢 Overweight"
+            elif "Underweight" in rec: stance = "🔴 Underweight"
+            message += f"\n🎯 *AI Stance:* {stance}\n"
         
-        # High yield alerts
-        high_yield_reits = [r for r in reits_data if r.get('dividend_yield') and r['dividend_yield'] >= 7]
-        if high_yield_reits:
-            message += "\n*💰 High Yield Alerts (≥7%):*\n"
-            for reit in sorted(high_yield_reits, key=lambda x: x['dividend_yield'], reverse=True)[:3]:
-                message += f"• {reit['name'][:25]}: {reit['dividend_yield']}%\n"
-        
-        # Deep discount alerts
-        deep_discount = [r for r in reits_data if r.get('price_to_nav') and r['price_to_nav'] < 0.8]
-        if deep_discount:
-            message += "\n*🏷️ Deep NAV Discounts (<0.8x):*\n"
-            for reit in sorted(deep_discount, key=lambda x: x['price_to_nav'])[:3]:
-                message += f"• {reit['name'][:25]}: {reit['price_to_nav']}x P/NAV\n"
-        
-        # Technical alerts
-        oversold = [r for r in reits_data if r.get('rsi') and r['rsi'] < 30]
-        overbought = [r for r in reits_data if r.get('rsi') and r['rsi'] > 70]
-        
-        if oversold:
-            message += "\n*📉 Oversold (RSI<30):*\n"
-            for reit in oversold:
-                message += f"• {reit['name'][:25]}: RSI {reit['rsi']}\n"
-        
-        if overbought:
-            message += "\n*📈 Overbought (RSI>70):*\n"
-            for reit in overbought:
-                message += f"• {reit['name'][:25]}: RSI {reit['rsi']}\n"
-        
-        message += "\n🔗 [View Dashboard](https://agenticcycleos.github.io/Singapore-Reits/)"
+        message += "\n🔗 [View Full AI Dashboard](https://agenticcycleos.github.io/Singapore-Reits/)"
         
         await bot.send_message(
             chat_id=TELEGRAM_CHAT_ID,
@@ -91,6 +73,6 @@ async def send_telegram_update(reits_data, portfolio_metrics=None):
         logger.error(f"Error sending Telegram update: {e}")
         return False
 
-def send_update(reits_data, portfolio_metrics=None):
+def send_update(reits_data, portfolio_metrics=None, ai_analysis=None):
     """Synchronous wrapper for sending Telegram update."""
-    return asyncio.run(send_telegram_update(reits_data, portfolio_metrics))
+    return asyncio.run(send_telegram_update(reits_data, portfolio_metrics, ai_analysis))

@@ -2,11 +2,10 @@
 
 An automated dashboard for monitoring Singapore Real Estate Investment Trusts (S-REITs), featuring data-driven technical analysis and AI-powered market insights using Claude 3.5 Sonnet.
 
-[![S-REITs Dashboard Preview](https://agenticcycleos.github.io/Singapore-Reits/)
 
 ## 🚀 Features
 
-- **Automated Data Fetching**: Retrieves historical price data via `yfinance` and scrapes fundamental metrics (Yield, P/NAV, Gearing) from [Fifth Person](https://sreit.fifthperson.com/).
+- **Automated Data Fetching**: Retrieves historical price data via `yfinance` and scrapes fundamental metrics (Yield, P/NAV, Gearing)
 - **Technical Analysis**: Computes RSI, trend indicators, and price changes to identify market movements.
 - **AI Insights**: Integrates with **Anthropic's Claude 3.5 Sonnet** to generate:
   - Weekly market commentary.

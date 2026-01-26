@@ -2,7 +2,7 @@
 
 An automated dashboard for monitoring Singapore Real Estate Investment Trusts (S-REITs), featuring data-driven technical analysis and AI-powered market insights using Claude 3.5 Sonnet.
 
-[![S-REITs Dashboard Preview](https://via.placeholder.com/800x400.png?text=S-REITs+Dashboard+Preview) *(Replace with actual screenshot if available)*](https://github.com/AgenticCycleOS/)
+[![S-REITs Dashboard Preview](https://agenticcycleos.github.io/Singapore-Reits/)
 
 ## 🚀 Features
 

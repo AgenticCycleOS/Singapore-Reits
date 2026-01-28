@@ -7,7 +7,7 @@ An automated dashboard for monitoring Singapore Real Estate Investment Trusts (S
 
 - **Automated Data Fetching**: Retrieves historical price data via `yfinance` and scrapes fundamental metrics (Yield, P/NAV, Gearing)
 - **Technical Analysis**: Computes RSI, trend indicators, and price changes to identify market movements.
-- **AI Insights**: Integrates with **Anthropic's Claude 3.5 Sonnet** to generate:
+- **AI Insights**: Integrates with **Anthropic's Claude 4.5 Sonnet** to generate:
   - Weekly market commentary.
   - Individual REIT investment perspectives.
   - Sector-specific outlooks (Industrial, Commercial, Healthcare, etc.).

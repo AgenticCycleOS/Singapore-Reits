@@ -63,7 +63,7 @@ Total length: 150-200 words."""
 
     try:
         response = client.messages.create(
-            model="claude-3-5-sonnet-20240620",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=500,
             messages=[{"role": "user", "content": prompt}]
         )
@@ -94,7 +94,7 @@ Keep response under 50 words."""
 
     try:
         response = client.messages.create(
-            model="claude-3-5-sonnet-20240620",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=150,
             messages=[{"role": "user", "content": prompt}]
         )
@@ -133,7 +133,7 @@ Format as JSON: {{"sector_name": "outlook text"}}"""
 
     try:
         response = client.messages.create(
-            model="claude-3-5-sonnet-20240620",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=400,
             messages=[{"role": "user", "content": prompt}]
         )
@@ -182,7 +182,7 @@ Keep total response under 100 words. Be specific and actionable."""
 
     try:
         response = client.messages.create(
-            model="claude-3-5-sonnet-20240620",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=300,
             messages=[{"role": "user", "content": prompt}]
         )

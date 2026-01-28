@@ -19,7 +19,7 @@ An automated dashboard for monitoring Singapore Real Estate Investment Trusts (S
 
 - **Language**: Python 3.11
 - **Data Sources**: Yahoo Finance (yfinance), Beautiful Soup 4 (Web Scraping)
-- **AI Engine**: Anthropic Claude API (claude-3-5-sonnet-20240620)
+- **AI Engine**: Anthropic Claude API claude-sonnet-4-5-20250929
 - **Automation**: GitHub Actions
 - **deployment**: GitHub Pages
 - **Notifications**: Telegram Bot API

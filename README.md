@@ -1,13 +1,13 @@
 # 🇸🇬 S-REITs AI Dashboard
 
-An automated dashboard for monitoring Singapore Real Estate Investment Trusts (S-REITs), featuring data-driven technical analysis and AI-powered market insights using Claude 3.5 Sonnet.
+An automated dashboard for monitoring Singapore Real Estate Investment Trusts (S-REITs), featuring data-driven technical analysis and AI-powered market insights using Claude Sonnet 5.5.
 
 
 ## 🚀 Features
 
 - **Automated Data Fetching**: Retrieves historical price data via `yfinance` and scrapes fundamental metrics (Yield, P/NAV, Gearing)
 - **Technical Analysis**: Computes RSI, trend indicators, and price changes to identify market movements.
-- **AI Insights**: Integrates with **Anthropic's Claude 4.5 Sonnet** to generate:
+- **AI Insights**: Integrates with **Anthropic's Claude Sonnet 5.5** to generate:
   - Weekly market commentary.
   - Individual REIT investment perspectives.
   - Sector-specific outlooks (Industrial, Commercial, Healthcare, etc.).
@@ -19,7 +19,7 @@ An automated dashboard for monitoring Singapore Real Estate Investment Trusts (S
 
 - **Language**: Python 3.11
 - **Data Sources**: Yahoo Finance (yfinance), Beautiful Soup 4 (Web Scraping)
-- **AI Engine**: Anthropic Claude API claude-sonnet-4-5-20250929
+- **AI Engine**: Anthropic Claude API claude-sonnet-5-5
 - **Automation**: GitHub Actions
 - **deployment**: GitHub Pages
 - **Notifications**: Telegram Bot API
@@ -84,3 +84,8 @@ The project includes two primary GitHub Action workflows located in `.github/wor
 
 ---
 *Disclaimer: This tool is for informational purposes only and does not constitute financial advice.*
+
+
+### Claude model policy
+
+Anthropic requests allow only `claude-haiku-5-5` and `claude-sonnet-5-5`. Existing Haiku collectors and summaries keep Haiku 5.5; all other Claude analysis uses Sonnet 5.5. Opus and older Claude model overrides are rejected before an API request. API errors, refusals and incomplete answers use the existing local fallback; no alternate Claude model is requested.

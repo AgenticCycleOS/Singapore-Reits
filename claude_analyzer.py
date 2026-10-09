@@ -7,6 +7,7 @@ import os
 import json
 import logging
 from anthropic import Anthropic
+from claude_policy import request_options, response_text
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -63,11 +64,11 @@ Total length: 150-200 words."""
 
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-5-20250929",
+            **request_options(),
             max_tokens=500,
             messages=[{"role": "user", "content": prompt}]
         )
-        return response.content[0].text
+        return response_text(response)
     except Exception as e:
         logger.error(f"Error generating market commentary: {e}")
         return get_fallback_commentary(portfolio_metrics)
@@ -94,11 +95,11 @@ Keep response under 50 words."""
 
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-5-20250929",
-            max_tokens=150,
+            **request_options(),
+            max_tokens=256,
             messages=[{"role": "user", "content": prompt}]
         )
-        return response.content[0].text
+        return response_text(response)
     except Exception as e:
         logger.error(f"Error generating REIT analysis: {e}")
         return None
@@ -133,11 +134,11 @@ Format as JSON: {{"sector_name": "outlook text"}}"""
 
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-5-20250929",
+            **request_options(),
             max_tokens=400,
             messages=[{"role": "user", "content": prompt}]
         )
-        text = response.content[0].text
+        text = response_text(response)
         start = text.find('{')
         end = text.rfind('}') + 1
         if start >= 0 and end > start:
@@ -182,11 +183,11 @@ Keep total response under 100 words. Be specific and actionable."""
 
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-5-20250929",
+            **request_options(),
             max_tokens=300,
             messages=[{"role": "user", "content": prompt}]
         )
-        return response.content[0].text
+        return response_text(response)
     except Exception as e:
         logger.error(f"Error generating portfolio recommendation: {e}")
         return get_fallback_recommendation(portfolio_metrics)
